@@ -1,0 +1,628 @@
+{
+  "info": {
+    "name": "Super Admin API",
+    "description": "Complete API collection for Super Admin backend testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{authToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"superadmin@example.com\",\n  \"password\": \"Test1234!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    pm.collectionVariables.set('authToken', pm.response.json().token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/users?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "users"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "user_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New User\",\n  \"email\": \"newuser@example.com\",\n  \"password\": \"password123\",\n  \"roles\": [\"user\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "users"]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated User Name\",\n  \"email\": \"updated@example.com\",\n  \"roles\": [\"admin\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "user_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "user_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Roles",
+      "item": [
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/roles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "roles"]
+            }
+          }
+        },
+        {
+          "name": "Get Role by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/roles/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "roles", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "role_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"moderator\",\n  \"permissions\": [\"read\", \"write\", \"moderate\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/roles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "roles"]
+            }
+          }
+        },
+        {
+          "name": "Update Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"updated_moderator\",\n  \"permissions\": [\"read\", \"write\", \"moderate\", \"delete\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/roles/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "roles", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "role_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Role",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/roles/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "roles", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "role_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Assign Role to User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user_id_here\",\n  \"roleId\": \"role_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/roles/assign-role",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "roles", "assign-role"]
+            }
+          }
+        },
+        {
+          "name": "Remove Role from User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"user_id_here\",\n  \"roleId\": \"role_id_here\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/roles/assign-role",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "roles", "assign-role"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Audit Logs",
+      "item": [
+        {
+          "name": "Get Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/audit-logs?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "audit-logs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Audit Logs with Filters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/audit-logs?action=LOGIN&startDate=2024-01-01&endDate=2024-12-31",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "audit-logs"],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "LOGIN"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Available Actions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/audit-logs/actions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "audit-logs", "actions"]
+            }
+          }
+        },
+        {
+          "name": "Get Available Target Types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/audit-logs/target-types",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "audit-logs", "target-types"]
+            }
+          }
+        },
+        {
+          "name": "Get Audit Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/audit-logs/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "audit-logs", "summary"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Get Analytics Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/analytics/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "analytics", "summary"]
+            }
+          }
+        },
+        {
+          "name": "Get User Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/analytics/users?period=30",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "analytics", "users"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "30"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Activity Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/analytics/activity?period=7",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "analytics", "activity"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "7"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Settings",
+      "item": [
+        {
+          "name": "Get All Settings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "settings"]
+            }
+          }
+        },
+        {
+          "name": "Get Setting by Key",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/settings/:key",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "settings", ":key"],
+              "variable": [
+                {
+                  "key": "key",
+                  "value": "feature_toggles"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Setting",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": \"updated_value\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/settings/:key",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "settings", ":key"],
+              "variable": [
+                {
+                  "key": "key",
+                  "value": "setting_key_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Setting",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"key\": \"new_setting\",\n  \"value\": \"setting_value\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "settings"]
+            }
+          }
+        },
+        {
+          "name": "Delete Setting",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/settings/:key",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "settings", ":key"],
+              "variable": [
+                {
+                  "key": "key",
+                  "value": "setting_key_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Feature Toggles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/settings/feature-toggles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "settings", "feature-toggles"]
+            }
+          }
+        },
+        {
+          "name": "Update Feature Toggles",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"featureToggles\": {\n    \"new_ui\": true,\n    \"beta_features\": false,\n    \"dark_mode\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/settings/feature-toggles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "settings", "feature-toggles"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "health"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
