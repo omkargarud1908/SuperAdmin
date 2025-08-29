@@ -116,14 +116,12 @@ router.get('/summary', async (req, res) => {
     }
 
     res.json({
-      summary: {
-        totalUsers,
-        totalRoles,
-        totalAuditLogs,
-        activeUsers,
-        loginsLast7Days,
-        newUsersLast30Days
-      },
+      totalUsers,
+      totalRoles,
+      totalAuditLogs,
+      activeUsersLast7Days: activeUsers,
+      loginsLast7Days,
+      newUsersLast30Days,
       roleDistribution: roleDistribution.map(role => ({
         name: role.name,
         userCount: role._count.userRoles

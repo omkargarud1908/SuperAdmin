@@ -88,8 +88,8 @@ async function main() {
 
   // --- Create Test Users ---
   const testUsers = [
-    { name: 'John Doe', email: 'john@example.com', password: 'password123', roles: ['user'] },
-    { name: 'Jane Smith', email: 'jane@example.com', password: 'password123', roles: ['admin'] },
+    { name: 'Omkar Graud', email: 'omkargarud@gmail.com', password: 'password123', roles: ['user'] },
+    { name: 'Rohit', email: 'rohit@gmail.com', password: 'password123', roles: ['admin'] },
   ];
 
   for (const u of testUsers) {

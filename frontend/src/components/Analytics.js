@@ -20,7 +20,7 @@ function Analytics() {
   const fetchAnalytics = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/api/v1/superadmin/analytics/summary');
+      const response = await api.get('/superadmin/analytics/summary');
       setAnalytics(response.data);
     } catch (err) {
       setError('Failed to load analytics data');

@@ -35,7 +35,8 @@ function AuditLogs() {
         }
       });
 
-      const response = await api.get(`/api/v1/superadmin/audit-logs?${params}`);
+      const response = await api.get(`/superadmin/audit-logs?${params}`);
+      console.log("Audit Logs Response:", response.data.auditLogs); // ✅ Debug log
       setAuditLogs(response.data.auditLogs);
       setPagination(response.data.pagination);
     } catch (err) {
@@ -86,6 +87,12 @@ function AuditLogs() {
       'ASSIGN_ROLE': '#9b59b6'
     };
     return colors[action] || '#95a5a6';
+  };
+
+  const safeRender = (value) => {
+    if (value == null) return '-';
+    if (typeof value === 'string' || typeof value === 'number') return value;
+    return JSON.stringify(value); // fallback if it's an object
   };
 
   if (loading && auditLogs.length === 0) {
@@ -180,8 +187,8 @@ function AuditLogs() {
                 <td>
                   {log.actor ? (
                     <div className="user-info">
-                      <span className="user-name">{log.actor.name}</span>
-                      <span className="user-email">{log.actor.email}</span>
+                      <span className="user-name">{safeRender(log.actor.name)}</span>
+                      <span className="user-email">{safeRender(log.actor.email)}</span>
                     </div>
                   ) : (
                     'Unknown User'
@@ -195,10 +202,10 @@ function AuditLogs() {
                     {log.action}
                   </span>
                 </td>
-                <td>{log.targetType}</td>
-                <td>{log.targetId}</td>
+                <td>{safeRender(log.targetType)}</td>
+                <td>{safeRender(log.targetId)}</td>
                 <td className="details-cell">
-                  {log.details || '-'}
+                  {safeRender(log.details)}
                 </td>
               </tr>
             ))}

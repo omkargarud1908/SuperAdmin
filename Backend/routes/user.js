@@ -163,8 +163,7 @@ router.post('/', async (req, res) => {
       data: {
         name,
         email,
-        hashedPassword,
-        roles: roles
+        hashedPassword
       },
       include: {
         userRoles: {
@@ -222,7 +221,7 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, password, roles } = req.body;
+    const { name, email, password, roles, isActive } = req.body;
 
     // Check if user exists
     const existingUser = await prisma.user.findUnique({
@@ -238,7 +237,7 @@ router.put('/:id', async (req, res) => {
     if (name) updateData.name = name;
     if (email) updateData.email = email;
     if (password) updateData.hashedPassword = await bcrypt.hash(password, 12);
-    if (roles) updateData.roles = roles;
+    if (typeof isActive === 'boolean') updateData.isActive = isActive;
 
     // Update user
     const user = await prisma.user.update({

@@ -20,7 +20,7 @@ function Dashboard() {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/api/v1/superadmin/analytics/summary');
+      const response = await api.get('/superadmin/analytics/summary');
       setStats(response.data);
     } catch (err) {
       setError('Failed to load dashboard statistics');
