@@ -2,12 +2,12 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-const authRoutes = require('../routes/auth');
-const userRoutes = require('../routes/user');
-const roleRoutes = require('../routes/roles');
-const auditLogRoutes = require('../routes/auditLogs');
-const analyticsRoutes = require('../routes/analytics');
-const settingsRoutes = require('../routes/settings');
+const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/user');
+const roleRoutes = require('./routes/roles');
+const auditLogRoutes = require('./routes/auditLogs');
+const analyticsRoutes = require('./routes/analytics');
+const settingsRoutes = require('./routes/settings');
 
 const app = express();
 
