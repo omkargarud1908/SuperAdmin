@@ -5,7 +5,7 @@ A complete Super Admin system with REST APIs, React frontend, and comprehensive 
 ## 🎯 Features
 
 - **User Management**: CRUD operations with role-based access control
-- **Role Management**: Create, update, delete roles and assign them to users
+- **Role Management**: Edit, update, delete roles and assign them to users
 - **Audit Logging**: Comprehensive activity tracking with filtering
 - **Analytics Dashboard**: User statistics, activity metrics, and trends
 - **Feature Toggles**: Dynamic system settings and feature management
