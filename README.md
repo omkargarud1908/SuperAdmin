@@ -369,6 +369,12 @@ datasource db {
 
 <img width="1563" height="892" alt="{5885E93D-FEDF-48A9-802F-6FDDCD0036C8}" src="https://github.com/user-attachments/assets/b614e71f-4fc0-4377-a078-ca63ae1d74fe" />
 
+<img width="1905" height="627" alt="{291209BD-9D40-4AB2-8778-46A95798D3A9}" src="https://github.com/user-attachments/assets/261b3896-1219-463c-a92d-92f2afe4acf3" />
+
+<img width="1791" height="891" alt="{5890CAA9-0459-4F06-B251-8AB34700036E}" src="https://github.com/user-attachments/assets/4530f096-04c1-4728-88d0-982130eb3914" />
+
+
+
 
 
 ## 📝 API Examples
