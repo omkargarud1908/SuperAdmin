@@ -361,37 +361,15 @@ datasource db {
 }
 ```
 
-## 🚀 Deployment
+###ScreenShots
 
-### Backend Deployment
+<img width="783" height="832" alt="{32E46578-17C8-4500-889E-9B5F8335A936}" src="https://github.com/user-attachments/assets/4d9476f7-625e-400d-aadb-933ef3c4352e" />
 
-1. **Build the application:**
-   ```bash
-   cd Backend
-   npm run build
-   ```
+<img width="1842" height="888" alt="{7AA448AB-B65E-4056-B265-B6FD319B3C5C}" src="https://github.com/user-attachments/assets/5336807d-4bf8-401b-83b4-d3f4aa4caede" />
 
-2. **Set production environment variables:**
-   ```env
-   NODE_ENV=production
-   DATABASE_URL="your-production-database-url"
-   JWT_SECRET="your-production-secret"
-   ```
+<img width="1563" height="892" alt="{5885E93D-FEDF-48A9-802F-6FDDCD0036C8}" src="https://github.com/user-attachments/assets/b614e71f-4fc0-4377-a078-ca63ae1d74fe" />
 
-3. **Start the server:**
-   ```bash
-   npm start
-   ```
 
-### Frontend Deployment
-
-1. **Build the application:**
-   ```bash
-   cd frontend
-   npm run build
-   ```
-
-2. **Deploy the `build` folder to your hosting service**
 
 ## 📝 API Examples
 
@@ -475,17 +453,7 @@ npm run dev
 4. Add tests for new functionality
 5. Submit a pull request
 
-## 📄 License
 
-This project is licensed under the MIT License.
-
-## 🆘 Support
-
-For support and questions:
-1. Check the troubleshooting section
-2. Review the API documentation
-3. Run the test suite to verify functionality
-4. Create an issue with detailed error information
 
 ---
 
