@@ -205,6 +205,25 @@
   margin-bottom: 20px;
 }
 
+.no-logs {
+  text-align: center;
+  padding: 40px 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 2px dashed #dee2e6;
+}
+
+.no-logs p {
+  margin: 10px 0;
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+.no-logs p:first-child {
+  font-weight: 600;
+  color: #495057;
+}
+
 @media (max-width: 768px) {
   .audit-logs {
     padding: 16px;

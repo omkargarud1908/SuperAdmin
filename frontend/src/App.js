@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import Users from './components/Users';
+import Roles from './components/Roles';
 import AuditLogs from './components/AuditLogs';
 import Analytics from './components/Analytics';
 import Navbar from './components/Navbar';
@@ -66,6 +67,7 @@ function App() {
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/users" element={<Users />} />
+            <Route path="/roles" element={<Roles />} />
             <Route path="/audit-logs" element={<AuditLogs />} />
             <Route path="/analytics" element={<Analytics />} />
           </Routes>

@@ -9,8 +9,10 @@ function AuditLogs() {
   const [filters, setFilters] = useState({
     page: 1,
     limit: 20,
-    userId: '',
+    userName: '',
+    userEmail: '',
     action: '',
+    targetType: '',
     startDate: '',
     endDate: ''
   });
@@ -30,18 +32,28 @@ function AuditLogs() {
       setLoading(true);
       const params = new URLSearchParams();
       Object.keys(filters).forEach(key => {
-        if (filters[key]) {
+        if (filters[key] && filters[key] !== '') {
           params.append(key, filters[key]);
         }
       });
 
       const response = await api.get(`/superadmin/audit-logs?${params}`);
       console.log("Audit Logs Response:", response.data.auditLogs); // ✅ Debug log
+      console.log("Filters applied:", filters); // Debug filters
       setAuditLogs(response.data.auditLogs);
       setPagination(response.data.pagination);
     } catch (err) {
-      setError('Failed to load audit logs');
+      const errorMessage = err.response?.data?.message || 
+                          err.response?.data?.error || 
+                          err.message || 
+                          'Failed to load audit logs';
+      setError(errorMessage);
       console.error('Audit logs error:', err);
+      
+      // Log detailed error information
+      if (err.response?.data) {
+        console.error('Error response data:', err.response.data);
+      }
     } finally {
       setLoading(false);
     }
@@ -49,6 +61,7 @@ function AuditLogs() {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
+    console.log(`Filter changed: ${name} = ${value}`); // Debug log
     setFilters(prev => ({
       ...prev,
       [name]: value,
@@ -67,8 +80,10 @@ function AuditLogs() {
     setFilters({
       page: 1,
       limit: 20,
-      userId: '',
+      userName: '',
+      userEmail: '',
       action: '',
+      targetType: '',
       startDate: '',
       endDate: ''
     });
@@ -84,7 +99,11 @@ function AuditLogs() {
       'UPDATE': '#f39c12',
       'DELETE': '#e74c3c',
       'LOGIN': '#3498db',
-      'ASSIGN_ROLE': '#9b59b6'
+      'ASSIGN_ROLE': '#9b59b6',
+      'REMOVE_ROLE': '#e67e22',
+      'CREATE_ROLE': '#27ae60',
+      'UPDATE_ROLE': '#f39c12',
+      'DELETE_ROLE': '#e74c3c'
     };
     return colors[action] || '#95a5a6';
   };
@@ -113,14 +132,36 @@ function AuditLogs() {
         <h3>Filters</h3>
         <div className="filters-grid">
           <div className="filter-group">
-            <label>User ID:</label>
+            <label>User Name:</label>
             <input
               type="text"
-              name="userId"
-              value={filters.userId}
+              name="userName"
+              value={filters.userName}
               onChange={handleFilterChange}
-              placeholder="Enter user ID"
+              placeholder="Enter user name"
             />
+          </div>
+          
+          <div className="filter-group">
+            <label>User Email:</label>
+            <input
+              type="text"
+              name="userEmail"
+              value={filters.userEmail}
+              onChange={handleFilterChange}
+              placeholder="Enter user email"
+            />
+          </div>
+          
+          <div className="filter-group">
+            <label>Target Type:</label>
+            <select name="targetType" value={filters.targetType} onChange={handleFilterChange}>
+              <option value="">All Types</option>
+              <option value="USER">User</option>
+              <option value="ROLE">Role</option>
+              <option value="USER_ROLE">User Role</option>
+              <option value="SETTING">Setting</option>
+            </select>
           </div>
           
           <div className="filter-group">
@@ -132,6 +173,10 @@ function AuditLogs() {
               <option value="DELETE">Delete</option>
               <option value="LOGIN">Login</option>
               <option value="ASSIGN_ROLE">Assign Role</option>
+              <option value="REMOVE_ROLE">Remove Role</option>
+              <option value="CREATE_ROLE">Create Role</option>
+              <option value="UPDATE_ROLE">Update Role</option>
+              <option value="DELETE_ROLE">Delete Role</option>
             </select>
           </div>
           
@@ -169,48 +214,55 @@ function AuditLogs() {
 
       {/* Audit Logs Table */}
       <div className="audit-logs-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Timestamp</th>
-              <th>User</th>
-              <th>Action</th>
-              <th>Target Type</th>
-              <th>Target ID</th>
-              <th>Details</th>
-            </tr>
-          </thead>
-          <tbody>
-            {auditLogs.map((log) => (
-              <tr key={log.id}>
-                <td>{formatDate(log.timestamp)}</td>
-                <td>
-                  {log.actor ? (
-                    <div className="user-info">
-                      <span className="user-name">{safeRender(log.actor.name)}</span>
-                      <span className="user-email">{safeRender(log.actor.email)}</span>
-                    </div>
-                  ) : (
-                    'Unknown User'
-                  )}
-                </td>
-                <td>
-                  <span 
-                    className="action-badge"
-                    style={{ backgroundColor: getActionColor(log.action) }}
-                  >
-                    {log.action}
-                  </span>
-                </td>
-                <td>{safeRender(log.targetType)}</td>
-                <td>{safeRender(log.targetId)}</td>
-                <td className="details-cell">
-                  {safeRender(log.details)}
-                </td>
+        {auditLogs.length === 0 ? (
+          <div className="no-logs">
+            <p>No audit logs found with the current filters.</p>
+            <p>Try adjusting your filter criteria or check if there are any logs in the system.</p>
+          </div>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>User</th>
+                <th>Action</th>
+                <th>Target Type</th>
+                <th>Target ID</th>
+                <th>Details</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {auditLogs.map((log) => (
+                <tr key={log.id}>
+                  <td>{formatDate(log.timestamp)}</td>
+                  <td>
+                    {log.actor ? (
+                      <div className="user-info">
+                        <span className="user-name">{safeRender(log.actor.name)}</span>
+                        <span className="user-email">{safeRender(log.actor.email)}</span>
+                      </div>
+                    ) : (
+                      'Unknown User'
+                    )}
+                  </td>
+                  <td>
+                    <span 
+                      className="action-badge"
+                      style={{ backgroundColor: getActionColor(log.action) }}
+                    >
+                      {log.action}
+                    </span>
+                  </td>
+                  <td>{safeRender(log.targetType)}</td>
+                  <td>{safeRender(log.targetId)}</td>
+                  <td className="details-cell">
+                    {safeRender(log.details)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       {/* Pagination */}

@@ -15,7 +15,8 @@ router.get('/', async (req, res) => {
     const { 
       page = 1, 
       limit = 50, 
-      userId, 
+      userName, 
+      userEmail,
       action, 
       targetType,
       startDate,
@@ -30,10 +31,7 @@ router.get('/', async (req, res) => {
     // Build where clause
     const where = {};
     
-    if (userId) {
-      where.actorUserId = userId;
-    }
-
+    // Handle action and target type filters
     if (action) {
       where.action = action;
     }
@@ -74,11 +72,28 @@ router.get('/', async (req, res) => {
       orderBy
     });
 
-    // Get total count
-    const total = await prisma.auditLog.count({ where });
+    // Filter by user name or email if specified
+    let filteredLogs = auditLogs;
+    
+    if (userName) {
+      filteredLogs = filteredLogs.filter(log => 
+        log.actor && log.actor.name && 
+        log.actor.name.toLowerCase().includes(userName.toLowerCase())
+      );
+    }
+    
+    if (userEmail) {
+      filteredLogs = filteredLogs.filter(log => 
+        log.actor && log.actor.email && 
+        log.actor.email.toLowerCase().includes(userEmail.toLowerCase())
+      );
+    }
+    
+    // Get total count after filtering
+    const total = userName || userEmail ? filteredLogs.length : await prisma.auditLog.count({ where });
 
     // Format response
-    const formattedLogs = auditLogs.map(log => ({
+    const formattedLogs = filteredLogs.map(log => ({
       ...log,
       details: log.details ? JSON.parse(log.details) : null,
       actor: log.actor

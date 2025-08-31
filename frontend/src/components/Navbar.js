@@ -48,6 +48,15 @@ function Navbar({ user, onLogout }) {
           </Link>
           
           <Link 
+            to="/roles" 
+            className={`nav-link ${isActive('/roles') ? 'active' : ''}`}
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <span className="nav-icon">🔐</span>
+            Roles
+          </Link>
+          
+          <Link 
             to="/audit-logs" 
             className={`nav-link ${isActive('/audit-logs') ? 'active' : ''}`}
             onClick={() => setIsMenuOpen(false)}

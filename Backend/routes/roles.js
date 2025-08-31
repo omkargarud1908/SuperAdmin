@@ -25,6 +25,11 @@ router.get('/', async (req, res) => {
               }
             }
           }
+        },
+        rolePermissions: {
+          include: {
+            permission: true
+          }
         }
       },
       orderBy: { createdAt: 'desc' }
@@ -33,14 +38,19 @@ router.get('/', async (req, res) => {
     const formattedRoles = roles.map(role => ({
       ...role,
       userCount: role.userRoles.length,
-      users: role.userRoles.map(ur => ur.user)
+      users: role.userRoles.map(ur => ur.user),
+      permissions: role.rolePermissions.map(rp => rp.permission.name)
     }));
 
     res.json({ roles: formattedRoles });
 
   } catch (error) {
     console.error('Get roles error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ 
+      message: 'Internal server error',
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 
@@ -63,6 +73,11 @@ router.get('/:id', async (req, res) => {
               }
             }
           }
+        },
+        rolePermissions: {
+          include: {
+            permission: true
+          }
         }
       }
     });
@@ -75,13 +90,18 @@ router.get('/:id', async (req, res) => {
       role: {
         ...role,
         userCount: role.userRoles.length,
-        users: role.userRoles.map(ur => ur.user)
+        users: role.userRoles.map(ur => ur.user),
+        permissions: role.rolePermissions.map(rp => rp.permission.name)
       }
     });
 
   } catch (error) {
     console.error('Get role error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ 
+      message: 'Internal server error',
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 
@@ -89,6 +109,8 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { name, permissions = [] } = req.body;
+
+    console.log('Creating role with data:', { name, permissions });
 
     // Validate input
     if (!name) {
@@ -108,13 +130,40 @@ router.post('/', async (req, res) => {
       });
     }
 
-    // Create role
+    // Create role first
     const role = await prisma.role.create({
       data: {
-        name,
-        permissions
+        name
       }
     });
+
+    console.log('Role created:', role);
+
+    // If permissions are provided, create them
+    if (permissions && permissions.length > 0) {
+      // First, ensure all permissions exist in the Permission table
+      for (const permissionName of permissions) {
+        let permission = await prisma.permission.findUnique({
+          where: { name: permissionName }
+        });
+
+        if (!permission) {
+          permission = await prisma.permission.create({
+            data: { name: permissionName }
+          });
+          console.log('Permission created:', permission);
+        }
+
+        // Create role-permission relationship
+        await prisma.rolePermission.create({
+          data: {
+            roleId: role.id,
+            permissionId: permission.id
+          }
+        });
+        console.log('Role permission created for:', permissionName);
+      }
+    }
 
     // Log audit event
     await logAuditEvent(
@@ -127,12 +176,19 @@ router.post('/', async (req, res) => {
 
     res.status(201).json({
       message: 'Role created successfully',
-      role
+      role: {
+        ...role,
+        permissions
+      }
     });
 
   } catch (error) {
     console.error('Create role error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ 
+      message: 'Internal server error',
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 
@@ -141,6 +197,8 @@ router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { name, permissions } = req.body;
+
+    console.log('Updating role with data:', { id, name, permissions });
 
     // Check if role exists
     const existingRole = await prisma.role.findUnique({
@@ -164,15 +222,52 @@ router.put('/:id', async (req, res) => {
       }
     }
 
-    // Prepare update data
-    const updateData = {};
-    if (name) updateData.name = name;
-    if (permissions) updateData.permissions = permissions;
+    // Update role name if provided
+    if (name) {
+      await prisma.role.update({
+        where: { id },
+        data: { name }
+      });
+    }
 
-    // Update role
-    const role = await prisma.role.update({
+    // Update permissions if provided
+    if (permissions) {
+      // Remove existing permissions
+      await prisma.rolePermission.deleteMany({
+        where: { roleId: id }
+      });
+
+      // Add new permissions
+      for (const permissionName of permissions) {
+        let permission = await prisma.permission.findUnique({
+          where: { name: permissionName }
+        });
+
+        if (!permission) {
+          permission = await prisma.permission.create({
+            data: { name: permissionName }
+          });
+        }
+
+        await prisma.rolePermission.create({
+          data: {
+            roleId: id,
+            permissionId: permission.id
+          }
+        });
+      }
+    }
+
+    // Fetch updated role with permissions
+    const updatedRole = await prisma.role.findUnique({
       where: { id },
-      data: updateData
+      include: {
+        rolePermissions: {
+          include: {
+            permission: true
+          }
+        }
+      }
     });
 
     // Log audit event
@@ -181,17 +276,24 @@ router.put('/:id', async (req, res) => {
       'UPDATE_ROLE',
       'ROLE',
       id,
-      { name: role.name, permissions: role.permissions }
+      { name: updatedRole.name, permissions }
     );
 
     res.json({
       message: 'Role updated successfully',
-      role
+      role: {
+        ...updatedRole,
+        permissions: updatedRole.rolePermissions.map(rp => rp.permission.name)
+      }
     });
 
   } catch (error) {
     console.error('Update role error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ 
+      message: 'Internal server error',
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 
@@ -278,23 +380,12 @@ router.post('/assign-role', async (req, res) => {
       return res.status(404).json({ message: 'Role not found' });
     }
 
-    // Check if role is already assigned
-    const existingAssignment = await prisma.userRole.findUnique({
-      where: {
-        userId_roleId: {
-          userId,
-          roleId
-        }
-      }
+    // Remove any existing roles for this user first (replace roles instead of adding)
+    await prisma.userRole.deleteMany({
+      where: { userId }
     });
 
-    if (existingAssignment) {
-      return res.status(400).json({ 
-        message: 'Role is already assigned to this user' 
-      });
-    }
-
-    // Assign role
+    // Assign the new role
     await prisma.userRole.create({
       data: {
         userId,
