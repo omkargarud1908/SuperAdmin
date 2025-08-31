@@ -113,6 +113,7 @@ docker run --name superadmin-db -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admi
 Create .env inside Backend/:
 
 DATABASE_URL=postgresql://admin:admin123@localhost:5432/superadmin
+
 JWT_SECRET="-----"
 
 ### Prisma ORM Setup
