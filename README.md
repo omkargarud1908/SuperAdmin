@@ -91,9 +91,9 @@ The backend will be running on `http://localhost:5000`
 
 The frontend will be running on `http://localhost:3000`
 
-##Database Setup (with Docker)
+## Database Setup (with Docker)
 
-###Start PostgreSQL with Docker:
+### Start PostgreSQL with Docker:
 PowerShell
 ```PowerShell
 docker run --name superadmin-db `
@@ -108,7 +108,7 @@ docker run --name superadmin-db `
 
 docker run --name superadmin-db -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin123 -e POSTGRES_DB=superadmin -p 5432:5432 -d postgres:15
 ```
-###Configure .env
+### Configure .env
 
 Create .env inside Backend/:
 
@@ -121,12 +121,12 @@ cd Backend
 npx prisma generate
 npx prisma db push
 ```
-###Seeding Data
+### Seeding Data
 ```Command Prompt
 npx prisma db seed
 ```
 
-###This creates:
+### This creates:
 
 Roles: superadmin, admin, user
 
