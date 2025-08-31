@@ -39,7 +39,8 @@ SuperAdmin/
 
 - Node.js (v16+ or v18+)
 - npm or yarn
-
+- Docker Desktop (for Postgres option)
+  
 ### Backend Setup
 
 1. **Navigate to backend directory:**
@@ -89,6 +90,54 @@ The backend will be running on `http://localhost:5000`
    ```
 
 The frontend will be running on `http://localhost:3000`
+
+##Database Setup (with Docker)
+
+###Start PostgreSQL with Docker:
+PowerShell
+```PowerShell
+docker run --name superadmin-db `
+  -e POSTGRES_USER=admin `
+  -e POSTGRES_PASSWORD=admin123 `
+  -e POSTGRES_DB=superadmin `
+  -p 5432:5432 `
+  -d postgres:15
+```
+
+```Command Prompt (CMD)
+
+docker run --name superadmin-db -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin123 -e POSTGRES_DB=superadmin -p 5432:5432 -d postgres:15
+```
+###Configure .env
+
+Create .env inside Backend/:
+
+DATABASE_URL=postgresql://admin:admin123@localhost:5432/superadmin
+JWT_SECRET="-----"
+
+### Prisma ORM Setup
+``` Command Prompt
+cd Backend
+npx prisma generate
+npx prisma db push
+```
+###Seeding Data
+```Command Prompt
+npx prisma db seed
+```
+
+###This creates:
+
+Roles: superadmin, admin, user
+
+Default permissions: all, read, write
+
+Super Admin user:
+
+Email: superadmin@example.com
+
+Password: Test1234!
+
 
 ## 🔐 Authentication
 
