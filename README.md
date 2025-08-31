@@ -5,7 +5,7 @@ A complete Super Admin system with REST APIs, React frontend, and comprehensive 
 ## 🎯 Features
 
 - **User Management**: CRUD operations with role-based access control
-- **Role Management**: Create, update, delete roles and assign them to users
+- **Role Management**: Edit, update, delete roles and assign them to users
 - **Audit Logging**: Comprehensive activity tracking with filtering
 - **Analytics Dashboard**: User statistics, activity metrics, and trends
 - **Feature Toggles**: Dynamic system settings and feature management
@@ -39,7 +39,8 @@ SuperAdmin/
 
 - Node.js (v16+ or v18+)
 - npm or yarn
-
+- Docker Desktop (for Postgres option)
+  
 ### Backend Setup
 
 1. **Navigate to backend directory:**
@@ -89,6 +90,55 @@ The backend will be running on `http://localhost:5000`
    ```
 
 The frontend will be running on `http://localhost:3000`
+
+## Database Setup (with Docker)
+
+### Start PostgreSQL with Docker:
+PowerShell
+```PowerShell
+docker run --name superadmin-db `
+  -e POSTGRES_USER=admin `
+  -e POSTGRES_PASSWORD=admin123 `
+  -e POSTGRES_DB=superadmin `
+  -p 5432:5432 `
+  -d postgres:15
+```
+
+```Command Prompt (CMD)
+
+docker run --name superadmin-db -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin123 -e POSTGRES_DB=superadmin -p 5432:5432 -d postgres:15
+```
+### Configure .env
+
+Create .env inside Backend/:
+
+DATABASE_URL=postgresql://admin:admin123@localhost:5432/superadmin
+
+JWT_SECRET="-----"
+
+### Prisma ORM Setup
+``` Command Prompt
+cd Backend
+npx prisma generate
+npx prisma db push
+```
+### Seeding Data
+```Command Prompt
+npx prisma db seed
+```
+
+### This creates:
+
+Roles: superadmin, admin, user
+
+Default permissions: all, read, write
+
+Super Admin user:
+
+Email: superadmin@example.com
+
+Password: Test1234!
+
 
 ## 🔐 Authentication
 
@@ -361,37 +411,21 @@ datasource db {
 }
 ```
 
-## 🚀 Deployment
+###ScreenShots
 
-### Backend Deployment
+<img width="783" height="832" alt="{32E46578-17C8-4500-889E-9B5F8335A936}" src="https://github.com/user-attachments/assets/4d9476f7-625e-400d-aadb-933ef3c4352e" />
 
-1. **Build the application:**
-   ```bash
-   cd Backend
-   npm run build
-   ```
+<img width="1842" height="888" alt="{7AA448AB-B65E-4056-B265-B6FD319B3C5C}" src="https://github.com/user-attachments/assets/5336807d-4bf8-401b-83b4-d3f4aa4caede" />
 
-2. **Set production environment variables:**
-   ```env
-   NODE_ENV=production
-   DATABASE_URL="your-production-database-url"
-   JWT_SECRET="your-production-secret"
-   ```
+<img width="1563" height="892" alt="{5885E93D-FEDF-48A9-802F-6FDDCD0036C8}" src="https://github.com/user-attachments/assets/b614e71f-4fc0-4377-a078-ca63ae1d74fe" />
 
-3. **Start the server:**
-   ```bash
-   npm start
-   ```
+<img width="1905" height="627" alt="{291209BD-9D40-4AB2-8778-46A95798D3A9}" src="https://github.com/user-attachments/assets/261b3896-1219-463c-a92d-92f2afe4acf3" />
 
-### Frontend Deployment
+<img width="1791" height="891" alt="{5890CAA9-0459-4F06-B251-8AB34700036E}" src="https://github.com/user-attachments/assets/4530f096-04c1-4728-88d0-982130eb3914" />
 
-1. **Build the application:**
-   ```bash
-   cd frontend
-   npm run build
-   ```
 
-2. **Deploy the `build` folder to your hosting service**
+
+
 
 ## 📝 API Examples
 
@@ -475,17 +509,7 @@ npm run dev
 4. Add tests for new functionality
 5. Submit a pull request
 
-## 📄 License
 
-This project is licensed under the MIT License.
-
-## 🆘 Support
-
-For support and questions:
-1. Check the troubleshooting section
-2. Review the API documentation
-3. Run the test suite to verify functionality
-4. Create an issue with detailed error information
 
 ---
 
