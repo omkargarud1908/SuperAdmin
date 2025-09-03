@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { rolesAPI } from '../services/api';
+import RoleEditModal from './RoleEditModal';
+import LoadingSpinner from './LoadingSpinner';
 import './Roles.css';
 
 const Roles = () => {
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -50,12 +54,13 @@ const Roles = () => {
     console.log('Creating role with data:', formData);
     
     try {
+      setActionLoading(true);
       const response = await rolesAPI.createRole(formData);
       console.log('Role created successfully:', response.data);
       setShowCreateModal(false);
       setFormData({ name: '', permissions: [] });
       setError('');
-      fetchRoles();
+      await fetchRoles();
     } catch (error) {
       console.error('Create role error:', error);
       const errorMessage = error.response?.data?.message || 
@@ -68,6 +73,8 @@ const Roles = () => {
       if (error.response?.data) {
         console.error('Error response data:', error.response.data);
       }
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -102,10 +109,11 @@ const Roles = () => {
   const handleDeleteRole = async (roleId, roleName) => {
     if (window.confirm(`Are you sure you want to delete the role "${roleName}"?`)) {
       try {
+        setActionLoading(true);
         const response = await rolesAPI.deleteRole(roleId);
         console.log('Role deleted successfully:', response.data);
         setError('');
-        fetchRoles();
+        await fetchRoles();
       } catch (error) {
         console.error('Delete role error:', error);
         const errorMessage = error.response?.data?.message || 
@@ -118,6 +126,8 @@ const Roles = () => {
         if (error.response?.data) {
           console.error('Error response data:', error.response.data);
         }
+      } finally {
+        setActionLoading(false);
       }
     }
   };
@@ -146,15 +156,31 @@ const Roles = () => {
     'audit:read', 'analytics:read', 'settings:read', 'settings:write'
   ];
 
-  if (loading) return <div className="loading">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="roles">
+        <h1>Role Management</h1>
+        <LoadingSpinner text="Loading roles" />
+      </div>
+    );
+  }
 
   return (
     <div className="roles">
+      {actionLoading && (
+        <LoadingSpinner 
+          text="Processing" 
+          overlay={true} 
+          size="medium"
+        />
+      )}
+      
       <div className="roles-header">
         <h1>Role Management</h1>
         <button 
           className="create-role-btn"
           onClick={() => setShowCreateModal(true)}
+          disabled={actionLoading}
         >
           Create New Role
         </button>
@@ -175,12 +201,23 @@ const Roles = () => {
                 <h3>{role.name}</h3>
                 <div className="role-actions">
                   <button 
+                    className="edit-btn"
+                    onClick={() => {
+                      setSelectedRole(role);
+                      setShowEditModal(true);
+                    }}
+                    disabled={actionLoading}
+                  >
+                    Edit
+                  </button>
+                  <button 
                     className="assign-btn"
                     onClick={() => {
                       setSelectedRole(role);
                       setAssignForm({ userId: '', roleId: role.id });
                       setShowAssignModal(true);
                     }}
+                    disabled={actionLoading}
                   >
                     Assign to User
                   </button>
@@ -188,6 +225,7 @@ const Roles = () => {
                     <button 
                       className="delete-btn"
                       onClick={() => handleDeleteRole(role.id, role.name)}
+                      disabled={actionLoading}
                     >
                       Delete
                     </button>
@@ -320,6 +358,23 @@ const Roles = () => {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Role Edit Modal */}
+      {showEditModal && selectedRole && (
+        <RoleEditModal
+          role={selectedRole}
+          isOpen={showEditModal}
+          onClose={() => {
+            setShowEditModal(false);
+            setSelectedRole(null);
+          }}
+          onSave={() => {
+            fetchRoles();
+            setShowEditModal(false);
+            setSelectedRole(null);
+          }}
+        />
       )}
     </div>
   );

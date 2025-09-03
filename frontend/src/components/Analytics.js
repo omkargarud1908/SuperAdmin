@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
+import LoadingSpinner from './LoadingSpinner';
 import './Analytics.css';
 
 function Analytics() {
@@ -43,7 +44,7 @@ function Analytics() {
     return (
       <div className="analytics">
         <h1>Analytics</h1>
-        <div className="loading">Loading analytics data...</div>
+        <LoadingSpinner text="Loading analytics data" />
       </div>
     );
   }

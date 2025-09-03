@@ -122,12 +122,7 @@
   font-size: 1.2rem;
 }
 
-.loading {
-  text-align: center;
-  padding: 40px;
-  color: #666;
-  font-size: 1.1rem;
-}
+/* Loading styles moved to shared LoadingSpinner component */
 
 .error {
   text-align: center;

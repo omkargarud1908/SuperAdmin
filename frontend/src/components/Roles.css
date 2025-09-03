@@ -4,30 +4,24 @@
   margin: 0 auto;
 }
 
+.roles h1 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+
 .roles-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 40px;
-  padding: 30px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 20px;
-  color: white;
-  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
-}
-
-.roles-header h1 {
-  margin: 0;
-  color: white;
-  font-size: 2.8rem;
-  font-weight: 800;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
 }
 
 .create-role-btn {
-  background: rgba(255, 255, 255, 0.2);
+  background: #667eea;
   color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid #667eea;
   padding: 15px 30px;
   border-radius: 12px;
   font-size: 1.1rem;
@@ -39,11 +33,17 @@
   letter-spacing: 0.5px;
 }
 
-.create-role-btn:hover {
+.create-role-btn:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.3);
   border-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.create-role-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .roles-grid {
@@ -108,6 +108,31 @@
   flex-wrap: wrap;
 }
 
+.edit-btn {
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.edit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2980b9 0%, #1f5f8b 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+.edit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .assign-btn {
   background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
   color: white;
@@ -121,10 +146,16 @@
   box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
 }
 
-.assign-btn:hover {
+.assign-btn:hover:not(:disabled) {
   background: linear-gradient(135deg, #219a52 0%, #27ae60 100%);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+}
+
+.assign-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .delete-btn {
@@ -140,10 +171,16 @@
   box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
 }
 
-.delete-btn:hover {
+.delete-btn:hover:not(:disabled) {
   background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+}
+
+.delete-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .role-details {
@@ -453,17 +490,7 @@
   box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
 }
 
-.loading {
-  text-align: center;
-  padding: 60px;
-  font-size: 1.3rem;
-  color: #6c757d;
-  font-weight: 500;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-radius: 16px;
-  margin: 40px 0;
-  border: 2px dashed #dee2e6;
-}
+/* Loading styles moved to shared LoadingSpinner component */
 
 .no-roles {
   text-align: center;
@@ -550,5 +577,11 @@
   
   .permissions-checkboxes {
     grid-template-columns: 1fr;
+  }
+  
+  /* Loading responsive styles moved to shared LoadingSpinner component */
+  
+  .roles h1 {
+    font-size: 2rem;
   }
 }

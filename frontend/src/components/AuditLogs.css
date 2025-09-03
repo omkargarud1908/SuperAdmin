@@ -1,12 +1,12 @@
 .audit-logs {
   padding: 20px;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
 .audit-logs h1 {
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   font-size: 2.5rem;
   font-weight: 600;
 }
@@ -187,12 +187,7 @@
   font-size: 0.9rem;
 }
 
-.loading {
-  text-align: center;
-  padding: 40px;
-  color: #666;
-  font-size: 1.1rem;
-}
+/* Loading styles moved to shared LoadingSpinner component */
 
 .error {
   text-align: center;
@@ -248,5 +243,9 @@
   .pagination {
     flex-direction: column;
     gap: 12px;
+  }
+  
+  .audit-logs h1 {
+    font-size: 2rem;
   }
 }

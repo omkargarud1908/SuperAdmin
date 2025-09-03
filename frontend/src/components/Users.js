@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { usersAPI, rolesAPI } from '../services/api';
+import LoadingSpinner from './LoadingSpinner';
 import './Users.css';
 
 const Users = () => {
@@ -203,13 +204,18 @@ const Users = () => {
     setShowRoleModal(true);
   };
 
-  if (loading) return <div className="loading">Loading...</div>;
+  if (loading) {
+    return (
+      <div className="users-container">
+        <h1>User Management</h1>
+        <LoadingSpinner text="Loading users" />
+      </div>
+    );
+  }
 
   return (
     <div className="users-container">
-      <div className="users-header">
-        <h2>User Management</h2>
-      </div>
+      <h1>User Management</h1>
       
       <div className="filters">
         <form onSubmit={handleSearch}>

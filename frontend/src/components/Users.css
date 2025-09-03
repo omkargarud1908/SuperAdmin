@@ -1,27 +1,15 @@
 /* Users Page Styles */
 .users-container {
   padding: 20px;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
-.users-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  padding: 25px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 16px;
-  color: white;
-  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
-}
-
-.users-header h2 {
-  margin: 0;
+.users-container h1 {
+  color: #333;
+  margin-bottom: 10px;
   font-size: 2.5rem;
-  font-weight: 800;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-weight: 600;
 }
 
 /* Filters Section */
@@ -452,14 +440,7 @@
   transform: translateY(-2px);
 }
 
-/* Loading State */
-.loading {
-  text-align: center;
-  padding: 60px;
-  font-size: 1.3rem;
-  color: #6c757d;
-  font-weight: 500;
-}
+/* Loading styles moved to shared LoadingSpinner component */
 
 /* Current Roles Display */
 .current-roles {
@@ -576,5 +557,9 @@
   .users-table th,
   .users-table td {
     padding: 8px 6px;
+  }
+  
+  .users-container h1 {
+    font-size: 2rem;
   }
 }

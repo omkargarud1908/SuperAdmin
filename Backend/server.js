@@ -8,15 +8,22 @@ const roleRoutes = require('./routes/roles');
 const auditLogRoutes = require('./routes/auditLogs');
 const analyticsRoutes = require('./routes/analytics');
 const settingsRoutes = require('./routes/settings');
+const emailReminderRoutes = require('./routes/emailReminders');
 
 const app = express();
 
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+// Initialize cron service for email reminders
+const cronService = require('./services/cronService');
+
 prisma.$connect()
   .then(() => console.log('Database connected successfully!'))
   .catch((err) => console.error('Database connection error:', err));
+
+// Initialize cron jobs
+cronService.initialize();
 
 // Middleware
 app.use(helmet());
@@ -30,6 +37,7 @@ app.use('/api/v1/superadmin/roles', roleRoutes);
 app.use('/api/v1/superadmin/audit-logs', auditLogRoutes);
 app.use('/api/v1/superadmin/analytics', analyticsRoutes);
 app.use('/api/v1/superadmin/settings', settingsRoutes);
+app.use('/api/v1/superadmin/email-reminders', emailReminderRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

@@ -56,6 +56,7 @@ export const usersAPI = {
 export const rolesAPI = {
   getRoles: () => api.get('/superadmin/roles'),
   getRole: (id) => api.get(`/superadmin/roles/${id}`),
+  getRoleForEdit: (id) => api.get(`/superadmin/roles/${id}/edit`),
   createRole: (roleData) => api.post('/superadmin/roles', roleData),
   updateRole: (id, roleData) => api.put(`/superadmin/roles/${id}`, roleData),
   deleteRole: (id) => api.delete(`/superadmin/roles/${id}`),
@@ -87,6 +88,22 @@ export const settingsAPI = {
   deleteSetting: (key) => api.delete(`/superadmin/settings/${key}`),
   getFeatureToggles: () => api.get('/superadmin/settings/feature-toggles'),
   updateFeatureToggles: (featureToggles) => api.put('/superadmin/settings/feature-toggles', { featureToggles }),
+};
+
+// Email Reminders API
+export const emailRemindersAPI = {
+  getStats: () => api.get('/superadmin/email-reminders/stats'),
+  getInactiveUsers: () => api.get('/superadmin/email-reminders/inactive-users'),
+  getAllInactiveUsers: () => api.get('/superadmin/email-reminders/all-inactive-users'),
+  sendReminderToUser: (userId) => api.post(`/superadmin/email-reminders/send-reminder/${userId}`),
+  sendRemindersToAll: () => api.post('/superadmin/email-reminders/send-reminders'),
+  markUserActive: (userId) => api.put(`/superadmin/email-reminders/mark-active/${userId}`),
+  resetUserReminders: (userId) => api.put(`/superadmin/email-reminders/reset-reminders/${userId}`),
+  getCronStatus: () => api.get('/superadmin/email-reminders/cron-status'),
+  triggerReminderJob: () => api.post('/superadmin/email-reminders/trigger-reminder-job'),
+  triggerCleanupJob: () => api.post('/superadmin/email-reminders/trigger-cleanup-job'),
+  restartCron: () => api.post('/superadmin/email-reminders/restart-cron'),
+  stopCron: () => api.post('/superadmin/email-reminders/stop-cron'),
 };
 
 // Health check

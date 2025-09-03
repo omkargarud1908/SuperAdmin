@@ -6,6 +6,7 @@ import Users from './components/Users';
 import Roles from './components/Roles';
 import AuditLogs from './components/AuditLogs';
 import Analytics from './components/Analytics';
+import EmailReminders from './components/EmailReminders';
 import Navbar from './components/Navbar';
 import { authAPI } from './services/api';
 import './App.css';
@@ -19,23 +20,34 @@ function App() {
   }, []);
 
   const checkAuthStatus = async () => {
+    console.log('App: Checking auth status...');
     const token = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
+    
+    console.log('App: Token exists:', !!token);
+    console.log('App: Saved user exists:', !!savedUser);
 
     if (token && savedUser) {
       try {
+        console.log('App: Validating token with API...');
         const response = await authAPI.getCurrentUser();
+        console.log('App: Token validation successful:', response.data);
         setUser(response.data.user);
       } catch (error) {
+        console.log('App: Token validation failed:', error);
         // Token is invalid, clear storage
         localStorage.removeItem('token');
         localStorage.removeItem('user');
       }
+    } else {
+      console.log('App: No token or user found in localStorage');
     }
+    console.log('App: Setting loading to false');
     setLoading(false);
   };
 
   const handleLogin = (userData) => {
+    console.log('App: User logged in successfully:', userData);
     setUser(userData);
   };
 
@@ -46,6 +58,7 @@ function App() {
   };
 
   if (loading) {
+    console.log('App: Still loading auth status...');
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
@@ -55,8 +68,11 @@ function App() {
   }
 
   if (!user) {
+    console.log('App: No user found, showing login page');
     return <Login onLogin={handleLogin} />;
   }
+
+  console.log('App: User authenticated, rendering main app:', user);
 
   return (
     <Router>
@@ -70,6 +86,7 @@ function App() {
             <Route path="/roles" element={<Roles />} />
             <Route path="/audit-logs" element={<AuditLogs />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/email-reminders" element={<EmailReminders />} />
           </Routes>
         </main>
       </div>

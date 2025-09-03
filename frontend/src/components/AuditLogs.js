@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
+import LoadingSpinner from './LoadingSpinner';
 import './AuditLogs.css';
 
 function AuditLogs() {
@@ -118,7 +119,7 @@ function AuditLogs() {
     return (
       <div className="audit-logs">
         <h1>Audit Logs</h1>
-        <div className="loading">Loading...</div>
+        <LoadingSpinner text="Loading audit logs" />
       </div>
     );
   }

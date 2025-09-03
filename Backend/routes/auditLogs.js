@@ -95,7 +95,14 @@ router.get('/', async (req, res) => {
     // Format response
     const formattedLogs = filteredLogs.map(log => ({
       ...log,
-      details: log.details ? JSON.parse(log.details) : null,
+      details: log.details ? (() => {
+        try {
+          return JSON.parse(log.details);
+        } catch (parseError) {
+          // If details is not valid JSON, return it as a string
+          return log.details;
+        }
+      })() : null,
       actor: log.actor
     }));
 
@@ -241,7 +248,14 @@ router.get('/summary', async (req, res) => {
       },
       recentActivity: recentActivity.map(log => ({
         ...log,
-        details: log.details ? JSON.parse(log.details) : null,
+        details: log.details ? (() => {
+          try {
+            return JSON.parse(log.details);
+          } catch (parseError) {
+            // If details is not valid JSON, return it as a string
+            return log.details;
+          }
+        })() : null,
         actor: log.actor
       }))
     });

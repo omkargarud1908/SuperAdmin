@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Super Admin API",
-    "description": "Complete API collection for Super Admin backend testing",
+    "description": "Complete API collection for Super Admin backend testing. Includes authentication, user management, role management with editing capabilities, audit logs, analytics, settings, email reminders, and health checks.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -26,6 +26,26 @@
       }
     ]
   },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-set auth token for all requests except login",
+          "if (pm.request.url.path.join('/') !== 'api/v1/auth/login') {",
+          "    const token = pm.collectionVariables.get('authToken');",
+          "    if (token) {",
+          "        pm.request.headers.add({",
+          "            key: 'Authorization',",
+          "            value: `Bearer ${token}`",
+          "        });",
+          "    }",
+          "}"
+        ]
+      }
+    }
+  ],
   "item": [
     {
       "name": "Authentication",
@@ -233,7 +253,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"moderator\",\n  \"permissions\": [\"read\", \"write\", \"moderate\"]\n}"
+              "raw": "{\n  \"name\": \"moderator\",\n  \"permissions\": [\"user:read\", \"user:write\", \"role:read\", \"audit:read\"]\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/superadmin/roles",
@@ -254,7 +274,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"updated_moderator\",\n  \"permissions\": [\"read\", \"write\", \"moderate\", \"delete\"]\n}"
+              "raw": "{\n  \"name\": \"updated_moderator\",\n  \"permissions\": [\"user:read\", \"user:write\", \"user:delete\", \"role:read\", \"role:write\", \"audit:read\"]\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/superadmin/roles/:id",
@@ -326,6 +346,51 @@
               "raw": "{{baseUrl}}/api/v1/superadmin/roles/assign-role",
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "superadmin", "roles", "assign-role"]
+            }
+          }
+        },
+        {
+          "name": "Get Role for Edit",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/roles/:id/edit",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "roles", ":id", "edit"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "role_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Role (Complete Example)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"admin\",\n  \"permissions\": [\n    \"user:read\",\n    \"user:write\",\n    \"user:delete\",\n    \"role:read\",\n    \"role:write\",\n    \"role:delete\",\n    \"audit:read\",\n    \"analytics:read\",\n    \"settings:read\",\n    \"settings:write\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/roles/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "roles", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "role_id_here"
+                }
+              ]
             }
           }
         }
@@ -602,6 +667,173 @@
               "raw": "{{baseUrl}}/api/v1/superadmin/settings/feature-toggles",
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "superadmin", "settings", "feature-toggles"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Email Reminders",
+      "item": [
+        {
+          "name": "Get Email Reminder Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/email-reminders/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "email-reminders", "stats"]
+            }
+          }
+        },
+        {
+          "name": "Get Inactive Users (Eligible)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/email-reminders/inactive-users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "email-reminders", "inactive-users"]
+            }
+          }
+        },
+        {
+          "name": "Get All Inactive Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/email-reminders/all-inactive-users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "email-reminders", "all-inactive-users"]
+            }
+          }
+        },
+        {
+          "name": "Send Reminder to User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/email-reminders/send-reminder/:userId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "email-reminders", "send-reminder", ":userId"],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "user_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Send Reminders to All",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/email-reminders/send-reminders",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "email-reminders", "send-reminders"]
+            }
+          }
+        },
+        {
+          "name": "Mark User as Active",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/email-reminders/mark-active/:userId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "email-reminders", "mark-active", ":userId"],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "user_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reset User Reminders",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/email-reminders/reset-reminders/:userId",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "email-reminders", "reset-reminders", ":userId"],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "user_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Cron Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/email-reminders/cron-status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "email-reminders", "cron-status"]
+            }
+          }
+        },
+        {
+          "name": "Trigger Reminder Job",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/email-reminders/trigger-reminder-job",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "email-reminders", "trigger-reminder-job"]
+            }
+          }
+        },
+        {
+          "name": "Trigger Cleanup Job",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/email-reminders/trigger-cleanup-job",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "email-reminders", "trigger-cleanup-job"]
+            }
+          }
+        },
+        {
+          "name": "Restart Cron",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/email-reminders/restart-cron",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "email-reminders", "restart-cron"]
+            }
+          }
+        },
+        {
+          "name": "Stop Cron",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/superadmin/email-reminders/stop-cron",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "superadmin", "email-reminders", "stop-cron"]
             }
           }
         }

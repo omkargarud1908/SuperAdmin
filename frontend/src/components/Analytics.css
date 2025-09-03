@@ -235,12 +235,7 @@
   font-size: 0.9rem;
 }
 
-.loading {
-  text-align: center;
-  padding: 40px;
-  color: #666;
-  font-size: 1.1rem;
-}
+/* Loading styles moved to shared LoadingSpinner component */
 
 .error {
   text-align: center;
@@ -282,5 +277,9 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+  }
+  
+  .analytics h1 {
+    font-size: 2rem;
   }
 }

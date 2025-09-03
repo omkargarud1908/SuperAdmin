@@ -47,6 +47,33 @@ const authenticateToken = async (req, res, next) => {
   }
 };
 
+// Middleware to require specific roles
+const requireRole = (allowedRoles) => {
+  return async (req, res, next) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: 'Authentication required' });
+      }
+
+      // Check if user has any of the allowed roles
+      const hasRequiredRole = req.user.userRoles.some(
+        userRole => allowedRoles.includes(userRole.role.name)
+      );
+
+      if (!hasRequiredRole) {
+        return res.status(403).json({ 
+          message: `Access denied. Required roles: ${allowedRoles.join(', ')}` 
+        });
+      }
+
+      next();
+    } catch (error) {
+      console.error('Role check error:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+};
+
 // Middleware to require superadmin role
 const requireSuperAdmin = async (req, res, next) => {
   try {
@@ -70,7 +97,32 @@ const requireSuperAdmin = async (req, res, next) => {
   }
 };
 
+// Middleware to require admin role (superadmin or admin)
+const requireAdmin = async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Authentication required' });
+    }
+
+    // Check if user has admin or superadmin role
+    const hasAdminRole = req.user.userRoles.some(
+      userRole => ['admin', 'superadmin'].includes(userRole.role.name)
+    );
+
+    if (!hasAdminRole) {
+      return res.status(403).json({ message: 'Admin access required' });
+    }
+
+    next();
+  } catch (error) {
+    console.error('Admin check error:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 module.exports = {
   authenticateToken,
-  requireSuperAdmin
+  requireRole,
+  requireSuperAdmin,
+  requireAdmin
 };

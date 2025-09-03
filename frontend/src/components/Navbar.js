@@ -30,8 +30,8 @@ function Navbar({ user, onLogout }) {
 
         <div className={`navbar-menu ${isMenuOpen ? 'active' : ''}`}>
           <Link 
-            to="/" 
-            className={`nav-link ${isActive('/') ? 'active' : ''}`}
+            to="/dashboard" 
+            className={`nav-link ${isActive('/dashboard') || isActive('/') ? 'active' : ''}`}
             onClick={() => setIsMenuOpen(false)}
           >
             <span className="nav-icon">📊</span>
@@ -72,6 +72,15 @@ function Navbar({ user, onLogout }) {
           >
             <span className="nav-icon">📈</span>
             Analytics
+          </Link>
+          
+          <Link 
+            to="/email-reminders" 
+            className={`nav-link ${isActive('/email-reminders') ? 'active' : ''}`}
+            onClick={() => setIsMenuOpen(false)}
+          >
+            <span className="nav-icon">📧</span>
+            Email Reminders
           </Link>
         </div>
 

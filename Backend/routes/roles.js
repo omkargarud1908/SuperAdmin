@@ -297,6 +297,52 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+// GET /api/v1/superadmin/roles/:id/edit - Get role data for editing
+router.get('/:id/edit', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const role = await prisma.role.findUnique({
+      where: { id },
+      include: {
+        rolePermissions: {
+          include: {
+            permission: true
+          }
+        }
+      }
+    });
+
+    if (!role) {
+      return res.status(404).json({ message: 'Role not found' });
+    }
+
+    // Get all available permissions for the dropdown
+    const allPermissions = await prisma.permission.findMany({
+      orderBy: { name: 'asc' }
+    });
+
+    res.json({
+      success: true,
+      data: {
+        role: {
+          ...role,
+          permissions: role.rolePermissions.map(rp => rp.permission.name)
+        },
+        availablePermissions: allPermissions.map(p => p.name)
+      }
+    });
+
+  } catch (error) {
+    console.error('Get role for edit error:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Failed to get role data for editing',
+      error: error.message
+    });
+  }
+});
+
 // DELETE /api/v1/superadmin/roles/:id - Delete role
 router.delete('/:id', async (req, res) => {
   try {
@@ -350,7 +396,7 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// POST /api/v1/superadmin/assign-role - Assign role to user
+// POST /api/v1/superadmin/roles/assign-role - Assign role to user
 router.post('/assign-role', async (req, res) => {
   try {
     const { userId, roleId } = req.body;
@@ -436,7 +482,7 @@ router.post('/assign-role', async (req, res) => {
   }
 });
 
-// DELETE /api/v1/superadmin/assign-role - Remove role from user
+// DELETE /api/v1/superadmin/roles/assign-role - Remove role from user
 router.delete('/assign-role', async (req, res) => {
   try {
     const { userId, roleId } = req.body;

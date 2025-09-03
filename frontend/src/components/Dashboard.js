@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../services/api';
+import { analyticsAPI } from '../services/api';
+import LoadingSpinner from './LoadingSpinner';
 import './Dashboard.css';
 
 function Dashboard() {
+  console.log('Dashboard: Component function called');
+  
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalRoles: 0,
@@ -14,18 +17,30 @@ function Dashboard() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    console.log('Dashboard: Component mounted, fetching stats...');
+    console.log('Dashboard: Current loading state:', loading);
+    console.log('Dashboard: Current stats state:', stats);
     fetchStats();
   }, []);
 
   const fetchStats = async () => {
     try {
+      console.log('Dashboard: Starting fetchStats...');
       setLoading(true);
-      const response = await api.get('/superadmin/analytics/summary');
+      setError(null);
+      console.log('Dashboard: Fetching stats from API...');
+      const response = await analyticsAPI.getSummary();
+      console.log('Dashboard: API response received:', response);
+      console.log('Dashboard: Response data:', response.data);
       setStats(response.data);
+      console.log('Dashboard: Stats state updated successfully');
     } catch (err) {
+      console.error('Dashboard: API call failed:', err);
+      console.error('Dashboard: Error details:', err.response?.data);
+      console.error('Dashboard: Error status:', err.response?.status);
       setError('Failed to load dashboard statistics');
-      console.error('Dashboard error:', err);
     } finally {
+      console.log('Dashboard: Setting loading to false');
       setLoading(false);
     }
   };
@@ -34,7 +49,7 @@ function Dashboard() {
     return (
       <div className="dashboard">
         <h1>Dashboard</h1>
-        <div className="loading">Loading...</div>
+        <LoadingSpinner text="Loading dashboard" />
       </div>
     );
   }
@@ -104,6 +119,10 @@ function Dashboard() {
           <Link to="/analytics" className="action-btn">
             <span>📈</span>
             View Analytics
+          </Link>
+          <Link to="/email-reminders" className="action-btn">
+            <span>📧</span>
+            Email Reminders
           </Link>
         </div>
       </div>
